@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'breathing_screen.dart';
+import 'widgets/logo_painter.dart';
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const BreathingScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+            transitionDuration: const Duration(seconds: 1),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const Color primaryColor = Color(0xFFD97736);
+    const Color backgroundLight = Color(0xFFF9F8F6);
+
+    return Scaffold(
+      backgroundColor: backgroundLight,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Floating/Pulsing Logo Container
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                // Soft outer glow
+                Container(
+                      width: 180,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: primaryColor.withValues(alpha: 0.15),
+                            blurRadius: 40,
+                            spreadRadius: 10,
+                          ),
+                        ],
+                      ),
+                    )
+                    .animate(
+                      onPlay: (controller) => controller.repeat(reverse: true),
+                    )
+                    .scale(
+                      begin: const Offset(1, 1),
+                      end: const Offset(1.2, 1.2),
+                      duration: 2.seconds,
+                      curve: Curves.easeInOut,
+                    ),
+
+                // The Logo
+                Animate(
+                  effects: [
+                    FadeEffect(duration: 1.5.seconds),
+                    ScaleEffect(
+                      begin: const Offset(0.8, 0.8),
+                      end: const Offset(1, 1),
+                      duration: 1.5.seconds,
+                      curve: Curves.easeOutBack,
+                    ),
+                  ],
+                  child: CustomPaint(
+                    size: const Size(140, 168),
+                    painter: LogoPainter(color: primaryColor),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 60),
+            // App Name
+            Text(
+                  'HANUMAN CHALISA',
+                  style: GoogleFonts.manrope(
+                    textStyle: const TextStyle(
+                      color: Color(0xFF161213),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 6.0,
+                    ),
+                  ),
+                )
+                .animate()
+                .fadeIn(delay: 800.ms, duration: 1.seconds)
+                .slideY(begin: 0.3, end: 0),
+            const SizedBox(height: 12),
+            Text(
+              'Sacred Verses of Devotion',
+              style: GoogleFonts.newsreader(
+                textStyle: TextStyle(
+                  color: const Color(0xFF161213).withValues(alpha: 0.4),
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ).animate().fadeIn(delay: 1.2.seconds, duration: 1.seconds),
+          ],
+        ),
+      ),
+    );
+  }
+}
