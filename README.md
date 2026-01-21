@@ -1,64 +1,57 @@
 # 📿 Hanuman Chalisa Paath
 
-> **A Serene & Immersive Spiritual Journey**
+[![Build & Release](https://github.com/praaatap/Hanuman-Chalisa-Paath/actions/workflows/release.yml/badge.svg)](https://github.com/praaatap/Hanuman-Chalisa-Paath/actions/workflows/release.yml)
 
-![App Icon](https://raw.githubusercontent.com/your-username/hanuman-chalisa-paath/main/assets/app_icon.png)
+> **A humble sanctuary for your daily practice.**
 
-Hanuman Chalisa Paath is a modern, meditative mobile application designed to bring you closer to the sacred verses of Lord Hanuman. Built with a focus on peace, mindfulness, and premium aesthetics, the app blends traditional devotion with state-of-the-art interactive design.
-
----
-
-## ✨ Features
-
-- **🌅 Saffron Soul Theme**: A visually stunning interface inspired by the sacred colors of saffron and gold, designed to evoke a sense of divinity and warmth.
-- **✨ Living Backgrounds**: Subtle, drifting particle effects that mimic "Prana" (life force), ensuring the app feels alive and ethereal.
-- **📖 Immersive Reading**: A realistic page-flip animation that recreates the experience of reading a physical holy book.
-- **🧘 Meditative Breathing**: Integrated breathing exercises to help you center yourself before venturing into the sacred verses.
-- **🎙️ Meaningful Melodies**: Integrated audio player with verse-by-verse meanings, allowing you to listen and understand the depth of each stotra.
-- **📈 Spiritual Progress**: A dedicated chant counter that persists across your sessions, helping you build a consistent spiritual habit.
+This project is a dedicated, calm space for reading the Hanuman Chalisa. It was built with pure devotion, aiming to provide a focused environment free from the distractions of the modern world. There are no ads, no tracking, and no commercial intent—just the sacred verses and a space for reflection.
 
 ---
 
-## 🎨 Design Philosophy
+## 🙏 Purpose
 
-The app is built on three core pillars:
-1.  **Serenity**: Every interaction is designed to be slow, intentional, and calming.
-2.  **Premium Experience**: Using high-quality typography (Newsreader & Manrope) and subtle micro-animations to create a world-class spiritual experience.
-3.  **Connection**: Bridging the gap between ancient wisdom and modern technology for the younger generation.
+In a world filled with digital noise, this app serves as a quiet corner for your spiritual journey. Every design choice—from the saffron hues to the gentle breathing cycles—is intended to help you center yourself before engaging with the sacred stotrams.
+
+## ✨ Devotional Experience
+
+- **Sacred Aesthetics**: A design inspired by the traditional colors of saffron and earth, creating a warm, divine atmosphere.
+- **Living Prana**: Subtle particle effects that represent the flow of life energy (Prana) around the verses.
+- **Traditional Reading**: A realistic page-flip interaction designed to mimic the feeling of handling a physical holy book.
+- **Meditative Breathing**: A simple guide to Pranayama before you begin your path, helping to calm the mind.
+- **Deep Meanings**: Verse-by-verse translations and audio to help you connect more deeply with the essence of Tulsidas's composition.
+- **Consistent Sadhana**: A small counter to help you track your daily practice.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Built With
 
-- **Framework**: [Flutter](https://flutter.dev)
-- **Animations**: `flutter_animate` & `CustomPainter`
-- **Typography**: Google Fonts (Newsreader, Manrope)
-- **State Management**: Provider (ChangeNotifier)
-- **Storage**: Shared Preferences
+- **Flutter**: For a smooth, unified experience.
+- **Newsreader & Manrope**: Chosen for their clarity and respectful tone.
+- **Pure Devotion**: The core motivation behind every line of code.
 
 ---
 
 ## 🚀 Getting Started
 
-1.  **Clone the repository**
-    ```bash
-    git clone https://github.com/your-username/hanuman-chalisa-paath.git
-    ```
-2.  **Install dependencies**
-    ```bash
-    flutter pub get
-    ```
-3.  **Run the application**
-    ```bash
-    flutter run
-    ```
+If you wish to run this on your own machine:
+
+1. **Clone the path**
+   ```bash
+   git clone https://github.com/praaatap/Hanuman-Chalisa-Paath.git
+   ```
+2. **Setup Dependencies**
+   ```bash
+   flutter pub get
+   ```
+3. **Invoke the App**
+   ```bash
+   flutter run
+   ```
 
 ---
 
 ## ☸️ Acknowledgments
 
-Inspired by the timeless devotion of Tulsidas and the infinite strength of Lord Hanuman.
+This app is a small offering at the feet of Lord Hanuman. Inspired by the immortal words of Goswami Tulsidas.
 
----
-
-*“Mangal Bhavan Amangal Hari...”*
+*“Pavan Tanay Sankat Haran, Mangal Murati Rup...”*
