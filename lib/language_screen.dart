@@ -42,11 +42,23 @@ class _LanguageScreenState extends State<LanguageScreen> {
               opacity: 0.1,
               child: ParticleBackground(color: primaryColor),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 16,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Color(0xFF161213),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    alignment: Alignment.centerLeft,
+                  ),
                   const SizedBox(height: 20),
                   Text(
                         'LANGUAGE',
@@ -64,7 +76,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       .slideX(begin: -0.2, end: 0),
                   const SizedBox(height: 12),
                   Text(
-                        'Choose your\npreferred script',
+                        'Choose your\nreading script',
                         style: GoogleFonts.newsreader(
                           textStyle: const TextStyle(
                             color: Color(0xFF161213),
@@ -77,18 +89,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       .animate()
                       .fadeIn(delay: 200.ms, duration: 800.ms)
                       .slideY(begin: 0.1, end: 0),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Select the format that brings you closest to the verses.',
-                    style: GoogleFonts.newsreader(
-                      textStyle: const TextStyle(
-                        color: Color(0xFF5A5A5A),
-                        fontSize: 16,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 400.ms),
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 32),
                   ...List.generate(_languages.length, (index) {
                     final lang = _languages[index];
                     final isSelected = _selectedLanguage == lang['title'];
@@ -104,24 +105,49 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               duration: 300.ms,
                               padding: const EdgeInsets.all(24),
                               decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
+                                color: isSelected
+                                    ? const Color(0xFFFFF9F0)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
                                   color: isSelected
                                       ? primaryColor
                                       : Colors.transparent,
-                                  width: 1.5,
+                                  width: 2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.03),
-                                    blurRadius: 10,
+                                    color: isSelected
+                                        ? primaryColor.withValues(alpha: 0.15)
+                                        : Colors.black.withValues(alpha: 0.03),
+                                    blurRadius: isSelected ? 20 : 10,
                                     offset: const Offset(0, 4),
                                   ),
                                 ],
                               ),
                               child: Row(
                                 children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? primaryColor.withValues(alpha: 0.1)
+                                          : const Color(0xFFF5F5F5),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      index == 0
+                                          ? Icons.auto_stories
+                                          : (index == 1
+                                                ? Icons.translate
+                                                : Icons.spellcheck),
+                                      color: isSelected
+                                          ? primaryColor
+                                          : Colors.grey,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -130,10 +156,12 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                         Text(
                                           lang['title']!,
                                           style: GoogleFonts.manrope(
-                                            textStyle: const TextStyle(
-                                              color: Color(0xFF161213),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
+                                            textStyle: TextStyle(
+                                              color: const Color(0xFF161213),
+                                              fontSize: 18,
+                                              fontWeight: isSelected
+                                                  ? FontWeight.w800
+                                                  : FontWeight.w600,
                                             ),
                                           ),
                                         ),
@@ -144,7 +172,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                             textStyle: TextStyle(
                                               color: const Color(
                                                 0xFF5A5A5A,
-                                              ).withValues(alpha: 0.6),
+                                              ).withValues(alpha: 0.7),
                                               fontSize: 14,
                                               fontStyle: FontStyle.italic,
                                             ),
@@ -153,31 +181,16 @@ class _LanguageScreenState extends State<LanguageScreen> {
                                       ],
                                     ),
                                   ),
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? primaryColor
-                                            : const Color(0xFFE0E0E0),
-                                        width: 2,
-                                      ),
+                                  if (isSelected)
+                                    Icon(
+                                      Icons.check_circle,
+                                      color: primaryColor,
+                                      size: 28,
+                                    ).animate().scale(
+                                      begin: const Offset(0.5, 0.5),
+                                      end: const Offset(1, 1),
+                                      curve: Curves.elasticOut,
                                     ),
-                                    child: isSelected
-                                        ? Center(
-                                            child: Container(
-                                              width: 10,
-                                              height: 10,
-                                              decoration: const BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: primaryColor,
-                                              ),
-                                            ),
-                                          )
-                                        : null,
-                                  ),
                                 ],
                               ),
                             ),
@@ -187,40 +200,54 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         .fadeIn(delay: (600 + index * 100).ms)
                         .slideY(begin: 0.1, end: 0);
                   }),
-                  const Spacer(),
+                  const SizedBox(height: 48),
                   SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ReadingScreen(language: _selectedLanguage),
+                        width: double.infinity,
+                        height: 64,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ReadingScreen(language: _selectedLanguage),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 4,
+                            shadowColor: primaryColor.withValues(alpha: 0.4),
                           ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        'Begin Journey',
-                        style: GoogleFonts.manrope(
-                          textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Begin Journey',
+                                style: GoogleFonts.manrope(
+                                  textStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.0,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(
+                                Icons.arrow_forward,
+                                color: Colors.white,
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 1.seconds),
-                  const SizedBox(height: 24),
+                      )
+                      .animate()
+                      .fadeIn(delay: 1.seconds)
+                      .slideY(begin: 0.2, end: 0),
+                  const SizedBox(height: 48),
                 ],
               ),
             ),

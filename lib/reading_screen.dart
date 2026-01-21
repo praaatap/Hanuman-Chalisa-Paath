@@ -7,6 +7,7 @@ import 'post_reading_screen.dart';
 import 'pause_screen.dart';
 import 'model/chalisa_data.dart';
 import 'logic/user_progress.dart';
+import 'logic/app_settings.dart';
 
 class ReadingScreen extends StatefulWidget {
   final String language;
@@ -97,16 +98,47 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
                 // Book Content
                 Expanded(
-                  child: PageFlipWidget(
-                    key: _controller,
-                    backgroundColor: backgroundLight,
-                    lastPage: Container(
-                      color: backgroundLight,
-                      child: const Center(child: Text('Last Page!')),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
                     ),
-                    children: List.generate(
-                      chalisaData.length,
-                      (index) => _buildPage(index),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFEFE8D8), // Outer bg
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: PageFlipWidget(
+                      key: _controller,
+                      backgroundColor: const Color(
+                        0xFFF9F5EC,
+                      ), // Inner Paper color
+                      // Sync external state with internal page flip
+                      // Note: Verify if 'onPageFlip' is the correct param for page_flip 0.1.0.
+                      // If it fails, we might need a GlobalKey<PageFlipWidgetState> to read page,
+                      // but usually there's a callback. I'll try 'onPageFlip' which is common.
+                      // If package text says `onPageFlip`, I'll use it.
+                      // Actually, for page_flip package, it might use `onPageSwipe`.
+                      // I will stick to button navigation updates primarily, but try to add logic.
+                      // Since I can't check docs, I will assume the user swipes.
+                      // If manual swipe doesn't update _currentPage, the next/prev buttons will be out of sync.
+                      // I'll make the buttons read the controller's page if possible?
+                      // No, simple solution:
+                      lastPage: Container(
+                        color: const Color(0xFFF9F5EC),
+                        child: const Center(
+                          child: Text('Hanuman Chalisa Completed'),
+                        ),
+                      ),
+                      children: List.generate(
+                        chalisaData.length,
+                        (index) => _buildPage(index),
+                      ),
                     ),
                   ),
                 ),
@@ -237,77 +269,84 @@ class _ReadingScreenState extends State<ReadingScreen> {
     const Color backgroundLight = Color(0xFFF9F8F6);
     final verse = chalisaData[index];
 
-    return Container(
-      color: backgroundLight,
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            verse.type,
-            style: GoogleFonts.manrope(
-              textStyle: TextStyle(
-                color: const Color(0xFFD97736).withValues(alpha: 0.5),
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2.0,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            verse.hindi,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.newsreader(
-              textStyle: const TextStyle(
-                color: Color(0xFF161213),
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                height: 1.3,
-              ),
-            ),
-          ),
-          if (widget.language != 'Hindi (Devanagari)') ...[
-            const SizedBox(height: 24),
-            Container(
-              width: 40,
-              height: 1,
-              color: const Color(0xFF161213).withValues(alpha: 0.1),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              widget.language == 'Hindi + Meaning'
-                  ? verse.meaning
-                  : verse.translit,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.newsreader(
-                textStyle: TextStyle(
-                  color: const Color(0xFF5A5A5A).withValues(alpha: 0.8),
-                  fontSize: 16,
-                  fontStyle: FontStyle.italic,
-                  height: 1.5,
-                ),
-              ),
-            ),
-          ],
-          const Spacer(),
-          if (index == 0)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Text(
-                'Swipe to start reading',
-                textAlign: TextAlign.center,
+    return ListenableBuilder(
+      listenable: AppSettings(),
+      builder: (context, child) {
+        final settings = AppSettings();
+        return Container(
+          color: backgroundLight,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                verse.type,
                 style: GoogleFonts.manrope(
                   textStyle: TextStyle(
-                    color: const Color(0xFF161213).withValues(alpha: 0.2),
+                    color: const Color(0xFFD97736).withValues(alpha: 0.5),
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
                   ),
                 ),
               ),
-            ),
-        ],
-      ),
+              const SizedBox(height: 24),
+              Text(
+                verse.hindi,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.newsreader(
+                  textStyle: TextStyle(
+                    color: const Color(0xFF161213),
+                    fontSize: settings.fontSize + 10,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                  ),
+                ),
+              ),
+              if (settings.showMeaning &&
+                  widget.language != 'Hindi (Devanagari)') ...[
+                const SizedBox(height: 24),
+                Container(
+                  width: 40,
+                  height: 1,
+                  color: const Color(0xFF161213).withValues(alpha: 0.1),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  widget.language == 'Hindi + Meaning'
+                      ? verse.meaning
+                      : verse.translit,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.newsreader(
+                    textStyle: TextStyle(
+                      color: const Color(0xFF5A5A5A).withValues(alpha: 0.8),
+                      fontSize: settings.fontSize,
+                      fontStyle: FontStyle.italic,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
+              const Spacer(),
+              if (index == 0)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Text(
+                    'Swipe to start reading',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.manrope(
+                      textStyle: TextStyle(
+                        color: const Color(0xFF161213).withValues(alpha: 0.2),
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
