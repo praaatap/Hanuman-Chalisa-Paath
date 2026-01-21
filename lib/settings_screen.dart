@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'logic/app_settings.dart';
+import 'logic/app_strings.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -25,15 +26,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         centerTitle: true,
-        title: Text(
-          'Settings',
-          style: GoogleFonts.newsreader(
-            textStyle: const TextStyle(
-              color: Color(0xFF161213),
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+        title: ListenableBuilder(
+          listenable: AppSettings(),
+          builder: (context, child) {
+            return Text(
+              AppStrings.get('settings_title', AppSettings().appLanguage),
+              style: GoogleFonts.newsreader(
+                textStyle: const TextStyle(
+                  color: Color(0xFF161213),
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          },
         ),
       ),
       body: ListenableBuilder(
@@ -45,7 +51,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildSectionHeader('READING COMFORT'),
+                _buildSectionHeader(
+                  AppStrings.get('reading_comfort', settings.appLanguage),
+                ),
                 const SizedBox(height: 16),
 
                 // Text Size Card
@@ -57,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Text Size',
+                            AppStrings.get('text_size', settings.appLanguage),
                             style: GoogleFonts.manrope(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -145,36 +153,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Language',
+                        AppStrings.get('app_language', settings.appLanguage),
                         style: GoogleFonts.manrope(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFF161213),
                         ),
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            'Hindi',
-                            style: GoogleFonts.manrope(
-                              fontSize: 14,
-                              color: Colors.grey,
+                      GestureDetector(
+                        onTap: () {
+                          // Toggle between English and Hindi
+                          final newLang = settings.appLanguage == 'English'
+                              ? 'Hindi'
+                              : 'English';
+                          settings.setAppLanguage(newLang);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: primaryColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: primaryColor.withValues(alpha: 0.2),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 14,
-                            color: Colors.grey,
+                          child: Row(
+                            children: [
+                              Text(
+                                settings.appLanguage == 'Hindi'
+                                    ? 'हिंदी'
+                                    : 'English',
+                                style: GoogleFonts.manrope(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: primaryColor,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.swap_horiz,
+                                size: 16,
+                                color: primaryColor,
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 40),
-                _buildSectionHeader('EXPERIENCE'),
+                _buildSectionHeader(
+                  AppStrings.get('experience', settings.appLanguage),
+                ),
                 const SizedBox(height: 16),
 
                 // Show Meaning Card
@@ -183,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Show Meaning',
+                        AppStrings.get('show_meaning', settings.appLanguage),
                         style: GoogleFonts.manrope(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -211,7 +246,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Background Sound',
+                            AppStrings.get(
+                              'background_sound',
+                              settings.appLanguage,
+                            ),
                             style: GoogleFonts.manrope(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -220,7 +258,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Temple Ambience',
+                            AppStrings.get(
+                              'temple_ambience',
+                              settings.appLanguage,
+                            ),
                             style: GoogleFonts.manrope(
                               fontSize: 12,
                               color: primaryColor.withValues(alpha: 0.8),
@@ -255,7 +296,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Hanuman Chalisa',
+                        AppStrings.get(
+                          'app_title_english',
+                          settings.appLanguage,
+                        ),
                         style: GoogleFonts.newsreader(
                           fontSize: 16,
                           fontStyle: FontStyle.italic,
@@ -264,7 +308,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'MADE WITH DEVOTION',
+                        AppStrings.get(
+                          'made_with_devotion',
+                          settings.appLanguage,
+                        ),
                         style: GoogleFonts.manrope(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,

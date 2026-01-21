@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'home_screen.dart';
+import 'logic/app_settings.dart';
+import 'logic/app_strings.dart';
 
 import 'widgets/particle_background.dart';
 
@@ -13,7 +15,6 @@ class BreathingScreen extends StatefulWidget {
 }
 
 class _BreathingScreenState extends State<BreathingScreen> {
-  String _breatheText = "Breathe in...";
   bool _isBreatheIn = true;
 
   @override
@@ -28,7 +29,6 @@ class _BreathingScreenState extends State<BreathingScreen> {
       if (!mounted) return;
       setState(() {
         _isBreatheIn = !_isBreatheIn;
-        _breatheText = _isBreatheIn ? "Breathe in..." : "Breathe out...";
       });
     }
   }
@@ -40,126 +40,140 @@ class _BreathingScreenState extends State<BreathingScreen> {
 
     return Scaffold(
       backgroundColor: backgroundLight,
-      body: Stack(
-        children: [
-          // Floating Particles for "Life"
-          const ParticleBackground(color: primaryColor),
+      body: ListenableBuilder(
+        listenable: AppSettings(),
+        builder: (context, child) {
+          final settings = AppSettings();
+          final breatheText = _isBreatheIn
+              ? AppStrings.get('breathe_in', settings.appLanguage)
+              : AppStrings.get('breathe_out', settings.appLanguage);
 
-          // Background Glows
-          Positioned.fill(
-            child: Center(
-              child:
-                  Container(
-                        width: 600,
-                        height: 600,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: primaryColor.withValues(alpha: 0.05),
-                        ),
-                      )
-                      .animate(
-                        onPlay: (controller) =>
-                            controller.repeat(reverse: true),
-                      )
-                      .blur(
-                        begin: const Offset(60, 60),
-                        end: const Offset(100, 100),
-                        duration: 4.seconds,
-                      ),
-            ),
-          ),
+          return Stack(
+            children: [
+              // Floating Particles for "Life"
+              const ParticleBackground(color: primaryColor),
 
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 40),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                        _breatheText,
-                        key: ValueKey(_breatheText),
+              // Background Glows
+              Positioned.fill(
+                child: Center(
+                  child:
+                      Container(
+                            width: 600,
+                            height: 600,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: primaryColor.withValues(alpha: 0.05),
+                            ),
+                          )
+                          .animate(
+                            onPlay: (controller) =>
+                                controller.repeat(reverse: true),
+                          )
+                          .blur(
+                            begin: const Offset(60, 60),
+                            end: const Offset(100, 100),
+                            duration: 4.seconds,
+                          ),
+                ),
+              ),
+
+              Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                            breatheText,
+                            key: ValueKey(_isBreatheIn),
+                            style: GoogleFonts.newsreader(
+                              textStyle: const TextStyle(
+                                color: Color(0xFF161213),
+                                fontSize: 48,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          )
+                          .animate(key: ValueKey(_isBreatheIn))
+                          .fadeIn(duration: 2.seconds)
+                          .fadeOut(delay: 2.seconds, duration: 2.seconds),
+
+                      const SizedBox(height: 16),
+
+                      Text(
+                        AppStrings.get('find_center', settings.appLanguage),
                         style: GoogleFonts.newsreader(
-                          textStyle: const TextStyle(
-                            color: Color(0xFF161213),
-                            fontSize: 48,
+                          textStyle: TextStyle(
+                            color: const Color(
+                              0xFF5A5A5A,
+                            ).withValues(alpha: 0.6),
+                            fontSize: 14,
                             fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w500,
+                            letterSpacing: 2.0,
                           ),
                         ),
-                      )
-                      .animate(key: ValueKey(_breatheText))
-                      .fadeIn(duration: 2.seconds)
-                      .fadeOut(delay: 2.seconds, duration: 2.seconds),
-
-                  const SizedBox(height: 16),
-
-                  Text(
-                    'Find your center',
-                    style: GoogleFonts.newsreader(
-                      textStyle: TextStyle(
-                        color: const Color(0xFF5A5A5A).withValues(alpha: 0.6),
-                        fontSize: 14,
-                        fontStyle: FontStyle.italic,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 500.ms, duration: 1.5.seconds),
-                ],
-              ),
-            ),
-          ),
-
-          // Footer
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Animated New Logo at bottom
-                  Opacity(
-                        opacity: 0.6,
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 24,
-                          height: 24,
-                        ),
-                      )
-                      .animate(onPlay: (p) => p.repeat(reverse: true))
-                      .scale(
-                        begin: const Offset(0.9, 0.9),
-                        end: const Offset(1.1, 1.1),
-                        duration: 2.seconds,
-                      ),
-
-                  const SizedBox(height: 16),
-
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'SKIP',
-                      style: GoogleFonts.manrope(
-                        textStyle: TextStyle(
-                          color: const Color(0xFF161213).withValues(alpha: 0.4),
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                    ),
+                      ).animate().fadeIn(delay: 500.ms, duration: 1.5.seconds),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+
+              // Footer
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 24.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animated New Logo at bottom
+                      Opacity(
+                            opacity: 0.6,
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                              width: 24,
+                              height: 24,
+                            ),
+                          )
+                          .animate(onPlay: (p) => p.repeat(reverse: true))
+                          .scale(
+                            begin: const Offset(0.9, 0.9),
+                            end: const Offset(1.1, 1.1),
+                            duration: 2.seconds,
+                          ),
+
+                      const SizedBox(height: 16),
+
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          AppStrings.get('skip', settings.appLanguage),
+                          style: GoogleFonts.manrope(
+                            textStyle: TextStyle(
+                              color: const Color(
+                                0xFF161213,
+                              ).withValues(alpha: 0.4),
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

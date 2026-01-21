@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'widgets/particle_background.dart';
 import 'model/chalisa_data.dart';
 import 'logic/app_settings.dart';
+import 'logic/app_strings.dart';
 
 class MeaningScrollScreen extends StatefulWidget {
   const MeaningScrollScreen({super.key});
@@ -29,6 +30,10 @@ class _MeaningScrollScreenState extends State<MeaningScrollScreen> {
     super.initState();
     _setupAudio();
     _scrollController.addListener(_updateAppBarTitle);
+    // Initialize title correctly
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateAppBarTitle();
+    });
   }
 
   void _setupAudio() {
@@ -65,7 +70,17 @@ class _MeaningScrollScreenState extends State<MeaningScrollScreen> {
   }
 
   void _updateAppBarTitle() {
-    if (!_scrollController.hasClients) return;
+    if (!_scrollController.hasClients) {
+      // Initial state set
+      final settings = AppSettings();
+      setState(() {
+        _appBarTitle = AppStrings.get(
+          'app_title_english',
+          settings.appLanguage,
+        );
+      });
+      return;
+    }
 
     // Estimate current index based on offset.
     // This isn't perfect but works for general localization.
@@ -73,14 +88,25 @@ class _MeaningScrollScreenState extends State<MeaningScrollScreen> {
     if (index < 0) index = 0;
     if (index >= chalisaData.length) index = chalisaData.length - 1;
 
+    final settings = AppSettings();
     String newTitle;
+
     if (index < chalisaData.length) {
       final verse = chalisaData[index];
       // Display e.g. "Chaupai 1" or "Doha 1"
-      // Assuming layout is strictly linear.
-      newTitle = "${verse.type} ${index + 1}";
+      String typePart = verse.type;
+      String numberPart = "";
+      if (verse.type.contains(' ')) {
+        final parts = verse.type.split(' ');
+        typePart = parts[0];
+        numberPart = " ${parts[1]}";
+      }
+
+      final typeKey = typePart.toLowerCase();
+      final localizedType = AppStrings.get(typeKey, settings.appLanguage);
+      newTitle = "$localizedType$numberPart";
     } else {
-      newTitle = "Hanuman Chalisa";
+      newTitle = AppStrings.get('app_title_english', settings.appLanguage);
     }
 
     if (newTitle != _appBarTitle) {
@@ -265,7 +291,10 @@ class _MeaningScrollScreenState extends State<MeaningScrollScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Hanuman Chalisa',
+                                  AppStrings.get(
+                                    'app_title_english',
+                                    AppSettings().appLanguage,
+                                  ),
                                   style: GoogleFonts.newsreader(
                                     textStyle: const TextStyle(
                                       color: Color(0xFF161213),
@@ -275,7 +304,10 @@ class _MeaningScrollScreenState extends State<MeaningScrollScreen> {
                                   ),
                                 ),
                                 Text(
-                                  'Hari Om Sharan',
+                                  AppStrings.get(
+                                    'singer_name',
+                                    AppSettings().appLanguage,
+                                  ),
                                   style: GoogleFonts.manrope(
                                     textStyle: TextStyle(
                                       color: const Color(
