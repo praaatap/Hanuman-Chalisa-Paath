@@ -102,15 +102,16 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               Navigator.of(context).push(
                                 PageRouteBuilder(
                                   opaque: false,
-                                  pageBuilder: (context, _, _) =>
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
                                       const PauseScreen(),
-                                  transitionsBuilder:
-                                      (context, animation, _, child) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: child,
-                                        );
-                                      },
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    );
+                                  },
                                 ),
                               );
                             },
@@ -229,7 +230,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   ),
                                 ),
                               ),
-
                               if (_currentPage < chalisaData.length - 1)
                                 TextButton(
                                   onPressed: () {
